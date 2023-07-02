@@ -36,7 +36,7 @@ class Vaga(models.Model):
     escolaridade_minima = models.PositiveSmallIntegerField(choices=ESCOLARIDADES_CHOICES, default=1, blank=False, null=False)
     timestamp = models.DateTimeField(auto_now_add = True, auto_now = False, blank = True)
     updated = models.DateTimeField(auto_now = True, blank = True)
-    candidatos = models.ManyToManyField(User, blank = True)
+    candidatos = models.ManyToManyField(Candidato, blank = True)
 
     def __str__(self):
         return self.nome
