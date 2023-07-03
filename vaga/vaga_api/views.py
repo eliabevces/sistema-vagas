@@ -1,10 +1,16 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.http import request
+from django.views.generic import CreateView
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import permissions
+from rest_framework.permissions import AllowAny
+from rest_framework import status, generics,permissions
 from .models import Vaga
-from .serializers import VagaSerializer
+from .serializers import VagaSerializer, UserSerializer, CandidatoSignupSerializer, EmpresaSignupSerializer
+from .permissions import IsCandidatoUser, IsEmpresaUser
+
+
+
 
 class VagaListApiView(APIView):
     # add permission to check if user is authenticated
@@ -38,3 +44,52 @@ class VagaListApiView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class CandidatoSignupView(generics.GenericAPIView):
+    serializer_class=CandidatoSignupSerializer
+    def post(self, request, *args, **kwargs):
+        serializer=self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user=serializer.save()
+        return Response({
+            "user":UserSerializer(user, context=self.get_serializer_context()).data,
+            "message":"account created successfully"
+        })
+
+
+class EmpresaSignupView(generics.GenericAPIView):
+    serializer_class=EmpresaSignupSerializer
+    def post(self, request, *args, **kwargs):
+        serializer=self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user=serializer.save()
+        return Response({
+            "user":UserSerializer(user, context=self.get_serializer_context()).data,
+            "message":"account created successfully"
+        })
+
+
+
+
+class LogoutView(APIView):
+    def post(self, request, format=None):
+        request.auth.delete()
+        return Response(status=status.HTTP_200_OK)
+
+
+class CandidatoOnlyView(generics.RetrieveAPIView):
+    permission_classes=[permissions.IsAuthenticated&IsCandidatoUser]
+    serializer_class=UserSerializer
+
+    def get_object(self):
+        return self.request.user
+
+class EmpresaOnlyView(generics.RetrieveAPIView):
+    permission_classes=[permissions.IsAuthenticated&IsEmpresaUser]
+    serializer_class=UserSerializer
+
+    def get_object(self):
+        return self.request.user

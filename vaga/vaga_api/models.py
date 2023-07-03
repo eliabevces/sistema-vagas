@@ -10,18 +10,27 @@ ESCOLARIDADES_CHOICES = (
     (6, 'Doutorado')
 )
 class User(AbstractUser):
-    email = models.EmailField(unique=True)
     is_candidato = models.BooleanField(default=False)
-    is_empresa = models.BooleanField(default=False)    
+    is_empresa = models.BooleanField(default=False) 
 
-
+    def save(self, *args, **kwargs):
+        self.username = self.email
+        return super().save(*args, **kwargs)
+ 
 class Candidato(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='candidato')
-    pretensão_salarial = models.DecimalField(max_digits= 5, decimal_places=2)
+    pretensao_salarial = models.DecimalField(max_digits= 8, decimal_places=2)
     experiencia = models.CharField(max_length = 300)
     escolaridade = models.PositiveSmallIntegerField(choices=ESCOLARIDADES_CHOICES, default=1, blank=False, null=False)
+
+    def __str__(self):
+        return self.user.email
+    
 class Empresa(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='empresa')
+
+    def __str__(self):
+        return self.user.email
 
 
 
