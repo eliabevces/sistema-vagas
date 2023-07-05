@@ -49,7 +49,7 @@ class Vaga(models.Model):
     timestamp = models.DateTimeField(auto_now_add = True, auto_now = False, blank = True)
     updated = models.DateTimeField(auto_now = True, blank = True)
     candidatos = models.ManyToManyField(Candidato, blank = True)
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    empresa = models.OneToOneField(Empresa,related_name='empresa', on_delete=models.CASCADE, blank=False, null=False)
 
 
     def __str__(self):
