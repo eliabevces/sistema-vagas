@@ -1,23 +1,19 @@
 from django.urls import path, include,re_path
+from . import views
 
-from .views import (
-    VagaListApiView,
-    # UsersListApiView,
-    EmpresasListApiView,
-    CandidatoSignupView,
-    # EmpresaSignupView,
-    # LogoutView,
-    # CandidatoOnlyView,
-    # EmpresaOnlyView
-    )
 
-urlpatterns=[
-    path('vagas/', VagaListApiView.as_view()),
-    # path('users/', UsersListApiView),
-    path('empresas/', EmpresasListApiView),
-    path('signup/candidato/', CandidatoSignupView.as_view()),
-    # path('signup/empresa/', EmpresaSignupView.as_view()),
-    # path('logout/', LogoutView.as_view(), name='logout-view'),
-    # path('candidato/dashboard/', CandidatoOnlyView.as_view(), name='candidato-dashboard'),
-    # path('empresa/dashboard/', EmpresaOnlyView.as_view(), name='empresa-dashboard'),
+from django.urls import path
+from . import views
+
+from rest_framework_simplejwt.views import (
+    TokenRefreshView,
+)
+
+urlpatterns = [
+    path('token/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('register/', views.RegisterEmpresaView.as_view(), name='auth_register'),
+    path('register_candidato/', views.RegisterCandidatoView.as_view(), name='auth_register_candidato'),
+    path('test/', views.testEndPoint, name='test'),
+    path('', views.getRoutes)
 ]

@@ -1,36 +1,87 @@
-from django.shortcuts import redirect, render
-from django.http import request
-from django.views.generic import CreateView
-from rest_framework.views import APIView
-from rest_framework.decorators import api_view
+from django.core.exceptions import ValidationError
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import status, generics,permissions
-from rest_framework.renderers import JSONRenderer
-from .models import Vaga, Empresa, User
-from .serializers import VagaSerializer, UserSerializer, CandidatoSignupSerializer, EmpresaSerializer
+from django.contrib.auth.password_validation import validate_password
+from .models import User, Candidato
+from .serializers import VagaSerializer, EmpresaSerializer, MyTokenObtainPairSerializer, CandidatoSerializer
 from .permissions import IsCandidatoUser, IsEmpresaUser
+import json
 
 
 
-# @api_view(['GET', 'POST'])
-class VagaListApiView(APIView):
-    permission_classes=[permissions.IsAuthenticated]
-    
-    def get(self, request, format=None):
-        data = Vaga.objects.all()
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
-        serializer = VagaSerializer(data, context={'request': request}, many=True)
+
+class RegisterEmpresaView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (AllowAny,)
+    serializer_class = EmpresaSerializer
+
+class RegisterCandidatoView(generics.CreateAPIView):
+    serializer_class = CandidatoSerializer
+
+    def create(self, request, *args, **kwargs):
+        post_data = request.data
+        if post_data['password'] != post_data['password2']:
+            raise ValidationError(
+                {"password": "Password fields didn't match."})
+        
+        validate_password(post_data['password'])
+
+        user = User.objects.create(
+            username=post_data['username'],
+            email=post_data['email'],
+            is_empresa=post_data['is_empresa'],
+            is_candidato= post_data['is_candidato'],
+            first_name=post_data['first_name']
+        )
+
+        user.set_password(post_data['password'])
+        user.save()
+
+
+        candidato = Candidato.objects.create(
+            user=user , pretensao_salarial=post_data["pretensao_salarial"], escolaridade=post_data["escolaridade"], experiencia=post_data["experiencia"])
+        candidato.save()
+
+        serializer = CandidatoSerializer(candidato)
 
         return Response(serializer.data)
+  
+@api_view(['GET'])
+def getRoutes(request):
+    routes = [
+        '/api/token/',
+        '/api/register/',
+        '/api/token/refresh/',
+        '/api/test/'
+    ]
+    return Response(routes)
 
-    # elif request.method == 'POST':
-    #     serializer = VagaSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(status=status.HTTP_201_CREATED)
 
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def testEndPoint(request):
+    if request.method == 'GET':
+        data = f"Congratulation {request.user}, your API just responded to GET request"
+        return Response({'response': data}, status=status.HTTP_200_OK)
+    elif request.method == 'POST':
+        try:
+            body = request.body.decode('utf-8')
+            data = json.loads(body)
+            if 'text' not in data:
+                return Response("Invalid JSON data", status.HTTP_400_BAD_REQUEST)
+            text = data.get('text')
+            data = f'Congratulation your API just responded to POST request with text: {text}'
+            return Response({'response': data}, status=status.HTTP_200_OK)
+        except json.JSONDecodeError:
+            return Response("Invalid JSON data", status.HTTP_400_BAD_REQUEST)
+    return Response("Invalid JSON data", status.HTTP_400_BAD_REQUEST)
+
 # class VagaListApiView(APIView):
 #     # add permission to check if user is authenticated
 #     # permission_classes = [permissions.IsAuthenticated]
@@ -60,84 +111,3 @@ class VagaListApiView(APIView):
 
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-@api_view(['GET', 'POST'])
-def EmpresasListApiView(request):
-
-    if request.method == 'GET':
-        data = Empresa.objects.all()
-
-        serializer = EmpresaSerializer(data, context={'request': request}, many=True)
-
-        return Response(serializer.data)
-    
-    # def post(self, request, *args, **kwargs):
-
-    #     data = {
-            
-    #         'first_name': request.data.get('first_name'), 
-    #         'faixa_salarial': request.data.get('faixa_salarial'), 
-    #         'requisitos': request.data.get('requisitos'), 
-    #         'escolaridade_minima': request.data.get('escolaridade_minima')
-    #     }
-
-    #     serializer = VagaSerializer(data=data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    
-# class EmpresasListApiView(APIView):
-
-#     def get(self, request, *args, **kwargs):
-#         users = Empresa.objects
-#         serializer = UserSerializer(users, many=True)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-
-class CandidatoSignupView(generics.GenericAPIView):
-    serializer_class=CandidatoSignupSerializer
-    def post(self, request, *args, **kwargs):
-        serializer=self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user=serializer.save()
-        return Response({
-            "user":UserSerializer(user, context=self.get_serializer_context()).data,
-            "message":"account created successfully"
-        })
-
-
-# class EmpresaSignupView(generics.GenericAPIView):
-#     serializer_class=EmpresaSignupSerializer
-#     def post(self, request, *args, **kwargs):
-#         serializer=self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         user=serializer.save()
-#         return Response({
-#             "user":UserSerializer(user, context=self.get_serializer_context()).data,
-#             "message":"account created successfully"
-#         })
-
-
-
-
-# class LogoutView(APIView):
-#     def post(self, request, format=None):
-#         request.auth.delete()
-#         return Response(status=status.HTTP_200_OK)
-
-
-# class CandidatoOnlyView(generics.RetrieveAPIView):
-#     permission_classes=[permissions.IsAuthenticated&IsCandidatoUser]
-#     serializer_class=UserSerializer
-
-#     def get_object(self):
-#         return self.request.user
-
-# class EmpresaOnlyView(generics.RetrieveAPIView):
-#     permission_classes=[permissions.IsAuthenticated&IsEmpresaUser]
-#     serializer_class=UserSerializer
-
-#     def get_object(self):
-#         return self.request.user
