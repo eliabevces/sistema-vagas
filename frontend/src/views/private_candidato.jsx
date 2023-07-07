@@ -1,48 +1,70 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/auth";
 import useAxios from "../utils/useAxios";
 
-const Private = () => {
-  const [isLoggedIn, user] = useAuthStore((state) => [
-    state.isLoggedIn,
-    state.user,
-  ]);
-  const [res, setRes] = useState("");
-  const [posRes, setPostRes] = useState("");
+const PrivateCandidato = () => {
+  const isCandidatoLoggedIn = useAuthStore(
+    (state) => state.isCandidatoLoggedIn
+  );
+  const [vagas_ativas, setVagasAtivas] = useState([]);
   const api = useAxios();
+  const navigate = useNavigate();
+
   useEffect(() => {
+    if (!isCandidatoLoggedIn()) {
+      navigate("/");
+    }
     const fetchData = async () => {
       try {
-        const response = await api.get("/test/");
-        setRes(response.data.response);
+        const response = await api.get("/inscrever_vagas/");
+        setVagasAtivas(response.data);
       } catch (error) {
-        setPostRes(error.response.data);
+        alert(error);
       }
     };
     fetchData();
   }, []);
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+
+  const InscreverVaga = async (id) => {
     try {
-      const response = await api.post("/test/", {
-        text: e.target[0].value,
-      });
-      setPostRes(response.data.response);
+      console.log(id);
+      await api.patch("/inscrever_vagas/", { id });
+      window.location.reload(true);
     } catch (error) {
-      setPostRes(error.response.data);
+      console.log(error);
     }
   };
+
   return (
     <section>
-      <h1>Private</h1>
-      <p>{res}</p>
-      <form method="POST" onSubmit={handleSubmit}>
-        <input type="text" placeholder="Enter Text" />
-        <button type="submit">Submit</button>
-      </form>
-      {posRes && <p>{posRes}</p>}
+      <table>
+        <tbody>
+          {vagas_ativas.map((vaga) => (
+            <tr key={vaga.id}>
+              <td>{vaga.nome}</td>
+              <td>{vaga.faixa_salarial}</td>
+              <td>{vaga.requisitos}</td>
+              <td>{vaga.escolaridade_minima}</td>
+              <td>
+                <button
+                  className="submit-btn"
+                  onClick={() => InscreverVaga(vaga.id)}
+                >
+                  Inscrever
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <Link to="/logout">
+        <button>Logout</button>
+      </Link>
     </section>
   );
 };
 
-export default Private;
+export default PrivateCandidato;

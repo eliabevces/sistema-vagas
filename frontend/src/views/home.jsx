@@ -33,8 +33,8 @@ const LoggedInView = ({ user }) => {
     return (
       <div>
         <h1>Welcome Candidato {user.first_name}</h1>
-        <Link to="/private">
-          <button>Private</button>
+        <Link to="/privateCandidato">
+          <button>Procurar Vagas</button>
         </Link>
         <Link to="/logout">
           <button>Logout</button>

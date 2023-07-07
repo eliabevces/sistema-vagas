@@ -133,3 +133,29 @@ def VagaListApiView(request):
         id = request.data.get('id')
         Vaga.objects.filter(id=id).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET', 'PATCH'])
+@permission_classes([IsCandidatoUser])
+def CandidatoVagaListApiView(request):
+
+    if request.method == 'GET':
+        
+        Vagas = Vaga.objects.all().exclude(candidatos__user=request.user.id)
+        serializer = VagaSerializer(Vagas, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'PATCH':
+         
+        try:
+            print(request.data)
+            print(request.user.id)
+            cand = Candidato.objects.get(user=request.user.id)
+            vaga = Vaga.objects.get(id=request.data.get('id'))
+            vaga.candidatos.add(cand)
+            vaga.save()
+            serializer = VagaSerializer(vaga)
+            return Response(serializer.data)
+        except json.JSONDecodeError:    
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
