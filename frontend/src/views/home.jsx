@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Container from "react-bootstrap/Container";
 import { useAuthStore } from "../store/auth";
 
 const Home = () => {
@@ -17,7 +18,8 @@ const LoggedInView = ({ user }) => {
   if (user.is_empresa) {
     return (
       <div>
-        <h1>Welcome Empresa {user.first_name}</h1>
+        <h1>Pagina da empresa</h1>
+        <h2>Bem vindo {user.first_name}</h2>
         <Link to="/privateEmpresa">
           <button>Listar Vagas</button>
         </Link>
@@ -32,7 +34,8 @@ const LoggedInView = ({ user }) => {
   } else {
     return (
       <div>
-        <h1>Welcome Candidato {user.first_name}</h1>
+        <h1>Pagina do Candidato</h1>
+        <h1>Bem Vindo {user.first_name}</h1>
         <Link to="/privateCandidato">
           <button>Procurar Vagas</button>
         </Link>
@@ -46,18 +49,20 @@ const LoggedInView = ({ user }) => {
 
 export const LoggedOutView = ({ title = "Home" }) => {
   return (
-    <div>
-      <h1>{title}</h1>
-      <Link to="/login">
-        <button>Login</button>
-      </Link>
-      <Link to="/RegisterEmpresa">
-        <button>Registrar Empresa</button>
-      </Link>
-      <Link to="/RegisterCandidato">
-        <button>Registrar Candidato</button>
-      </Link>
-    </div>
+    <Container className="p-3">
+      <div>
+        <h1>{title}</h1>
+        <Link to="/login">
+          <button>Login</button>
+        </Link>
+        <Link to="/RegisterEmpresa">
+          <button>Registrar Empresa</button>
+        </Link>
+        <Link to="/RegisterCandidato">
+          <button>Registrar Candidato</button>
+        </Link>
+      </div>
+    </Container>
   );
 };
 

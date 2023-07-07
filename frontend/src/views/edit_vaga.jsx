@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import Form from "react-bootstrap/Form";
 import { useAuthStore } from "../store/auth";
 import { ESCOLARIDADE_MINIMA, FAIXA_SALARIAL } from "../utils/constants";
 import useAxios from "../utils/useAxios";
@@ -44,14 +45,14 @@ const EditVaga = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { error } = await api.put("/vagas/", {
+      const { error } = await api.patch("/vagas/", {
         id,
         nome,
         faixa_salarial,
         requisitos,
         escolaridade_minima,
       });
-      navigate("/");
+      navigate("/privateEmpresa");
       resetForm();
     } catch (error) {
       alert(error);
@@ -59,13 +60,13 @@ const EditVaga = (props) => {
   };
   return (
     <section>
-      <form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit}>
         <h1>Editar Vaga</h1>
         <hr />
 
-        <div>
-          <label htmlFor="Nome">Titulo da Vaga:</label>
-          <input
+        <Form.Group>
+          <Form.Label htmlFor="Nome">Titulo da Vaga:</Form.Label>
+          <Form.Control
             type="text"
             id="nome"
             value={nome}
@@ -73,11 +74,11 @@ const EditVaga = (props) => {
             placeholder="Titulo da Vaga"
             required
           />
-        </div>
+        </Form.Group>
 
-        <div>
-          <label htmlFor="faixa_salarial">Faixa salarial:</label>
-          <select
+        <Form.Group>
+          <Form.Label htmlFor="faixa_salarial">Faixa salarial:</Form.Label>
+          <Form.Select
             onChange={(e) => setFaixaSalarial(e.target.value)}
             id="faixa_salarial"
             className="form-control"
@@ -88,23 +89,26 @@ const EditVaga = (props) => {
                 {faixa_salarial.label}
               </option>
             ))}
-          </select>
-        </div>
+          </Form.Select>
+        </Form.Group>
 
-        <div>
-          <label htmlFor="requisitos">Requisitos</label>
-          <textarea
+        <Form.Group>
+          <Form.Label htmlFor="requisitos">Requisitos</Form.Label>
+          <Form.Control
+            as="textarea"
             id="requisitos"
             onChange={(e) => setRequisitos(e.target.value)}
             placeholder="requisitos"
             value={requisitos}
             required
           />
-        </div>
+        </Form.Group>
 
-        <div>
-          <label htmlFor="escolaridade_minima">escolaridade minima:</label>
-          <select
+        <Form.Group>
+          <Form.Label htmlFor="escolaridade_minima">
+            escolaridade minima:
+          </Form.Label>
+          <Form.Select
             onChange={(e) => setEscolaridadeMinima(e.target.value)}
             id="escolaridade_minima"
             className="form-control"
@@ -115,11 +119,11 @@ const EditVaga = (props) => {
                 {escolaridade.label}
               </option>
             ))}
-          </select>
-        </div>
-
-        <button type="submit">Register</button>
-      </form>
+          </Form.Select>
+        </Form.Group>
+        <br />
+        <button type="submit">Editar</button>
+      </Form>
     </section>
   );
 };

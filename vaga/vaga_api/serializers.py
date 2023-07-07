@@ -8,12 +8,17 @@ class VagaSerializer(serializers.ModelSerializer):
         model = Vaga
         fields = ["id", "nome", "faixa_salarial", "requisitos", "escolaridade_minima", "timestamp", "updated", "candidatos", "empresa"]
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username", "email", "is_empresa", "is_candidato", "first_name"]
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
         # Add custom claims
+        token['first_name'] = user.first_name
         token['username'] = user.username
         token['email'] = user.email
         token['is_empresa'] = user.is_empresa
@@ -57,5 +62,5 @@ class CandidatoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Candidato
-        fields = ('user', 'pretensao_salarial', 'escolaridade', 'experiencia')
+        fields = '__all__'
         depth = 1

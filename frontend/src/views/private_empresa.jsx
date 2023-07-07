@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/auth";
 import useAxios from "../utils/useAxios";
+import Table from "react-bootstrap/Table";
+import { ESCOLARIDADE_MINIMA, FAIXA_SALARIAL } from "../utils/constants";
 
 const PrivateEmpresa = () => {
   const isEmpresaLoggedIn = useAuthStore((state) => state.isEmpresaLoggedIn);
@@ -37,14 +39,30 @@ const PrivateEmpresa = () => {
 
   return (
     <section>
-      <table>
+      <Table striped bordered hover variant="dark">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Nome da Vaga</th>
+            <th>Faixa Salarial</th>
+            <th>Requisitos</th>
+            <th>Escolaridade minima</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
         <tbody>
           {vagas_ativas.map((vaga) => (
             <tr key={vaga.id}>
+              <td>
+                <Link to={"/vagaInfo?id=" + vaga.id}>
+                  <button>Info</button>
+                </Link>
+              </td>
               <td>{vaga.nome}</td>
-              <td>{vaga.faixa_salarial}</td>
+              <td>{FAIXA_SALARIAL[vaga.faixa_salarial - 1].label}</td>
               <td>{vaga.requisitos}</td>
-              <td>{vaga.escolaridade_minima}</td>
+              <td>{ESCOLARIDADE_MINIMA[vaga.escolaridade_minima - 1].label}</td>
               <td>
                 <Link
                   to={
@@ -74,10 +92,14 @@ const PrivateEmpresa = () => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
+
+      <Link to="/">
+        <button>Home</button>
+      </Link>
 
       <Link to="/newVaga">
-        <button>Criar vaga</button>
+        <button>Nova vaga</button>
       </Link>
 
       <Link to="/logout">

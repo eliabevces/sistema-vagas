@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { register, register_candidato } from "../utils/auth";
+import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/auth";
 import { ESCOLARIDADE_MINIMA } from "../utils/constants";
@@ -59,42 +60,43 @@ function Register() {
 
   return (
     <section>
-      <form onSubmit={handleSubmit}>
-        <h1>Register</h1>
+      <Form onSubmit={handleSubmit}>
+        <h1>Novo Candidato</h1>
         <hr />
-        <div>
-          <label htmlFor="Nome">Nome</label>
-          <input
+
+        <Form.Group>
+          <Form.Label htmlFor="Nome">Nome</Form.Label>
+          <Form.Control
             type="text"
             id="first_name"
             onChange={(e) => setFirstName(e.target.value)}
             placeholder="Nome"
             required
           />
-        </div>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label htmlFor="email">Email</Form.Label>
+          <Form.Control
             type="email"
             id="email"
             onChange={(e) => setEmail(e.target.value)}
             placeholder="email"
             required
           />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label htmlFor="password">Password</Form.Label>
+          <Form.Control
             type="password"
             id="password"
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             required
           />
-        </div>
-        <div>
-          <label htmlFor="confirm-password">Confirm Password</label>
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label htmlFor="confirm-password">Confirm Password</Form.Label>
+          <Form.Control
             type="password"
             id="confirm-password"
             onChange={(e) => setPassword2(e.target.value)}
@@ -102,22 +104,13 @@ function Register() {
             required
           />
           <p>{password2 !== password ? "Passwords do not match" : ""}</p>
-        </div>
-        {/* <div hidden>
-          <label>
-            <input
-              type="checkbox"
-              id="is_empresa"
-              setEmpresa={(e) => setEmpresa(e.target.value)}
-              name="is_empresa"
-            />
-            Empresa
-          </label>
-        </div> */}
+        </Form.Group>
 
-        <div>
-          <label htmlFor="pretensao_salarial">Pretensão Salarial</label>
-          <input
+        <Form.Group>
+          <Form.Label htmlFor="pretensao_salarial">
+            Pretensão Salarial
+          </Form.Label>
+          <Form.Control
             type="number"
             step="0.01"
             min="0"
@@ -125,21 +118,22 @@ function Register() {
             onChange={(e) => setPretensaoSalarial(e.target.value)}
             required
           />
-        </div>
+        </Form.Group>
 
-        <div>
-          <label htmlFor="experiencia">Experiencia</label>
-          <textarea
+        <Form.Group>
+          <Form.Label htmlFor="experiencia">Experiencia</Form.Label>
+          <Form.Control
+            as="textarea"
             id="experiencia"
             onChange={(e) => setExperiencia(e.target.value)}
             placeholder="experiencia"
             required
           />
-        </div>
+        </Form.Group>
 
-        <div>
-          <label htmlFor="escolaridade">escolaridade minima:</label>
-          <select
+        <Form.Group>
+          <Form.Label htmlFor="escolaridade">escolaridade minima:</Form.Label>
+          <Form.Select
             onChange={(e) => setEscolaridade(e.target.value)}
             id="escolaridade"
             className="form-control"
@@ -149,11 +143,11 @@ function Register() {
                 {escolaridade.label}
               </option>
             ))}
-          </select>
-        </div>
-
-        <button type="submit">Register</button>
-      </form>
+          </Form.Select>
+        </Form.Group>
+        <br />
+        <button type="submit">Registrar</button>
+      </Form>
     </section>
   );
 }

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuthStore } from "../store/auth";
 import { ESCOLARIDADE_MINIMA, FAIXA_SALARIAL } from "../utils/constants";
+import Form from "react-bootstrap/Form";
 import useAxios from "../utils/useAxios";
 
 const NewVaga = () => {
@@ -43,11 +44,21 @@ const NewVaga = () => {
   };
   return (
     <section>
-      <form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit}>
         <h1>Nova vaga</h1>
         <hr />
 
-        <div>
+        <Form.Group className="mb-3" controlId="formNome">
+          <Form.Label htmlFor="Nome">Titulo da Vaga:</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter email"
+            id="nome"
+            onChange={(e) => setNome(e.target.value)}
+            required
+          />
+        </Form.Group>
+        {/* <div>
           <label htmlFor="Nome">Titulo da Vaga:</label>
           <input
             type="text"
@@ -56,11 +67,11 @@ const NewVaga = () => {
             placeholder="Titulo da Vaga"
             required
           />
-        </div>
+        </div> */}
 
-        <div>
-          <label htmlFor="faixa_salarial">Faixa salarial:</label>
-          <select
+        <Form.Group>
+          <Form.Label htmlFor="faixa_salarial">Faixa salarial:</Form.Label>
+          <Form.Select
             onChange={(e) => setFaixaSalarial(e.target.value)}
             id="faixa_salarial"
             className="form-control"
@@ -70,22 +81,25 @@ const NewVaga = () => {
                 {faixa_salarial.label}
               </option>
             ))}
-          </select>
-        </div>
+          </Form.Select>
+        </Form.Group>
 
-        <div>
-          <label htmlFor="requisitos">Requisitos</label>
-          <textarea
+        <Form.Group>
+          <Form.Label htmlFor="requisitos">Requisitos</Form.Label>
+          <Form.Control
+            as="textarea"
             id="requisitos"
             onChange={(e) => setRequisitos(e.target.value)}
             placeholder="requisitos"
             required
           />
-        </div>
+        </Form.Group>
 
-        <div>
-          <label htmlFor="escolaridade_minima">escolaridade minima:</label>
-          <select
+        <Form.Group>
+          <Form.Label htmlFor="escolaridade_minima">
+            escolaridade minima:
+          </Form.Label>
+          <Form.Select
             onChange={(e) => setEscolaridadeMinima(e.target.value)}
             id="escolaridade_minima"
             className="form-control"
@@ -95,11 +109,16 @@ const NewVaga = () => {
                 {escolaridade.label}
               </option>
             ))}
-          </select>
-        </div>
+          </Form.Select>
+        </Form.Group>
+        <br />
 
-        <button type="submit">Register</button>
-      </form>
+        <button type="submit">Criar</button>
+      </Form>
+      <br />
+      <Link to="/">
+        <button>Volta</button>
+      </Link>
     </section>
   );
 };

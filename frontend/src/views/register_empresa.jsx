@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { register } from "../utils/auth";
 import { useNavigate } from "react-router-dom";
+import Form from "react-bootstrap/Form";
 import { useAuthStore } from "../store/auth";
 
 function Register() {
@@ -46,42 +47,42 @@ function Register() {
 
   return (
     <section>
-      <form onSubmit={handleSubmit}>
-        <h1>Register</h1>
+      <Form onSubmit={handleSubmit}>
+        <h1>Nova Empresa</h1>
         <hr />
-        <div>
-          <label htmlFor="Nome">Nome</label>
-          <input
+        <Form.Group>
+          <Form.Label htmlFor="Nome">Nome</Form.Label>
+          <Form.Control
             type="text"
             id="first_name"
             onChange={(e) => setFirstName(e.target.value)}
             placeholder="Nome"
             required
           />
-        </div>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label htmlFor="email">Email</Form.Label>
+          <Form.Control
             type="email"
             id="email"
             onChange={(e) => setEmail(e.target.value)}
             placeholder="email"
             required
           />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label htmlFor="password">Password</Form.Label>
+          <Form.Control
             type="password"
             id="password"
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             required
           />
-        </div>
-        <div>
-          <label htmlFor="confirm-password">Confirm Password</label>
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label htmlFor="confirm-password">Confirm Password</Form.Label>
+          <Form.Control
             type="password"
             id="confirm-password"
             onChange={(e) => setPassword2(e.target.value)}
@@ -89,21 +90,10 @@ function Register() {
             required
           />
           <p>{password2 !== password ? "Passwords do not match" : ""}</p>
-        </div>
-        {/* <div hidden>
-          <label>
-            <input
-              type="checkbox"
-              id="is_empresa"
-              setEmpresa={(e) => setEmpresa(e.target.value)}
-              name="is_empresa"
-            />
-            Empresa
-          </label>
-        </div> */}
+        </Form.Group>
 
-        <button type="submit">Register</button>
-      </form>
+        <button type="submit">Registrar</button>
+      </Form>
     </section>
   );
 }

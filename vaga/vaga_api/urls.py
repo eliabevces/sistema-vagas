@@ -15,7 +15,9 @@ urlpatterns = [
     path('register/', views.RegisterEmpresaView.as_view(), name='auth_register'),
     path('register_candidato/', views.RegisterCandidatoView.as_view(), name='auth_register_candidato'),
     path('vagas/', views.VagaListApiView, name='vagas'),
+    path('vagasInfo/<int:id_vaga>/', views.VagaInfoView, name='vaga_info'),
+    path('candidatoInfo/<int:id_candidato>/', views.CandidatoInfoView, name='candidato_info'),
+    path('userInfo/<int:id_user>/', views.UserInfoView, name='user_info'),
     path('inscrever_vagas/', views.CandidatoVagaListApiView, name='vagas_candidato'),
-    path('test/', views.testEndPoint, name='test'),
     path('', views.getRoutes)
 ]

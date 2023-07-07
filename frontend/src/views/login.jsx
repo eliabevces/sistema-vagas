@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { login } from "../utils/auth";
+import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/auth";
 
@@ -33,29 +34,31 @@ const Login = () => {
   return (
     <section>
       <h1>Login</h1>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label htmlFor="email">email</label>
-          <input
+      <hr />
+      <Form onSubmit={handleLogin}>
+        <Form.Group>
+          <Form.Label htmlFor="email">email</Form.Label>
+          <Form.Control
             type="email"
             id="email"
             name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label htmlFor="password">Password</Form.Label>
+          <Form.Control
             type="password"
             id="password"
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-        </div>
+        </Form.Group>
+        <br />
         <button type="submit">Login</button>
-      </form>
+      </Form>
     </section>
   );
 };
