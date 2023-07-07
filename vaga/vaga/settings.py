@@ -167,4 +167,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'vaga_api.User'
 
+CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
+
 CORS_ORIGIN_ALLOW_ALL = True

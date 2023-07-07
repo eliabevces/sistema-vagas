@@ -14,6 +14,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', views.RegisterEmpresaView.as_view(), name='auth_register'),
     path('register_candidato/', views.RegisterCandidatoView.as_view(), name='auth_register_candidato'),
+    path('vagas/', views.VagaListApiView, name='vagas'),
     path('test/', views.testEndPoint, name='test'),
     path('', views.getRoutes)
 ]

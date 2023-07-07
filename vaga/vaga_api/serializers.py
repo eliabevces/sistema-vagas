@@ -6,7 +6,7 @@ from .models import Vaga, User, Candidato, Empresa
 class VagaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vaga
-        fields = ["nome", "faixa_salarial", "requisitos", "escolaridade_minima", "timestamp", "updated", "candidatos", "empresa"]
+        fields = ["id", "nome", "faixa_salarial", "requisitos", "escolaridade_minima", "timestamp", "updated", "candidatos", "empresa"]
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

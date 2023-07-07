@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/auth";
-// import { vagascom } from "assets/vagascom.png";
 
 const Home = () => {
   const [isLoggedIn, user] = useAuthStore((state) => [
@@ -19,8 +18,11 @@ const LoggedInView = ({ user }) => {
     return (
       <div>
         <h1>Welcome Empresa {user.first_name}</h1>
-        <Link to="/private">
-          <button>Private</button>
+        <Link to="/privateEmpresa">
+          <button>Listar Vagas</button>
+        </Link>
+        <Link to="/NewVaga">
+          <button>Nova Vaga</button>
         </Link>
         <Link to="/logout">
           <button>Logout</button>

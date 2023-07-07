@@ -145,7 +145,9 @@ function Register() {
             className="form-control"
           >
             {ESCOLARIDADE_MINIMA.map((escolaridade) => (
-              <option value={escolaridade.value}>{escolaridade.label}</option>
+              <option key={escolaridade.value} value={escolaridade.value}>
+                {escolaridade.label}
+              </option>
             ))}
           </select>
         </div>

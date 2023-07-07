@@ -5,9 +5,12 @@ import MainWrapper from "./layouts/MainWrapper";
 import Login from "./views/login";
 import PrivateRoute from "./layouts/PrivateRoute";
 import Logout from "./views/logout";
-import Private from "./views/private";
+import PrivateCandidato from "./views/private_candidato";
+import PrivateEmpresa from "./views/private_empresa";
 import RegisterEmpresa from "./views/register_empresa";
 import RegisterCandidato from "./views/register_candidato";
+import NewVaga from "./views/new_vaga";
+import EditVaga from "./views/edit_vaga";
 
 function App() {
   return (
@@ -15,17 +18,34 @@ function App() {
       <MainWrapper>
         <Routes>
           <Route
-            path="/private"
+            path="/privateEmpresa"
             element={
               <PrivateRoute>
-                <Private />
+                <PrivateEmpresa />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/privateCandidato"
+            element={
+              <PrivateRoute>
+                <PrivateCandidato />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/editVaga/"
+            element={
+              <PrivateRoute>
+                <EditVaga />
               </PrivateRoute>
             }
           />
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/RegisterEmpresa" element={<RegisterEmpresa />} />
-          <Route path="/RegisterCandidato" element={<RegisterCandidato />} />
+          <Route path="/registerEmpresa" element={<RegisterEmpresa />} />
+          <Route path="/registerCandidato" element={<RegisterCandidato />} />
+          <Route path="/newVaga" element={<NewVaga />} />
           <Route path="/logout" element={<Logout />} />
         </Routes>
       </MainWrapper>

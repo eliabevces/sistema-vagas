@@ -1,15 +1,16 @@
 from django.core.exceptions import ValidationError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.views import APIView
 from rest_framework import status, generics,permissions
 from django.contrib.auth.password_validation import validate_password
-from .models import User, Candidato
+from .models import User, Candidato, Vaga
 from .serializers import VagaSerializer, EmpresaSerializer, MyTokenObtainPairSerializer, CandidatoSerializer
 from .permissions import IsCandidatoUser, IsEmpresaUser
 import json
-
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -82,32 +83,53 @@ def testEndPoint(request):
             return Response("Invalid JSON data", status.HTTP_400_BAD_REQUEST)
     return Response("Invalid JSON data", status.HTTP_400_BAD_REQUEST)
 
-# class VagaListApiView(APIView):
-#     # add permission to check if user is authenticated
-#     # permission_classes = [permissions.IsAuthenticated]
 
-#     # 1. List all
-#     def get(self, request, *args, **kwargs):
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+@permission_classes([IsEmpresaUser])
+def VagaListApiView(request):
 
-#         Vagas = Vaga.objects
-#         serializer = VagaSerializer(Vagas, many=True)
-#         return Response(JSONRenderer().render(serializer.data), status=status.HTTP_200_OK)
+    if request.method == 'GET':
+        
+        Vagas = Vaga.objects.filter(empresa=request.user.id)
+        serializer = VagaSerializer(Vagas, many=True)
+        return Response(serializer.data)
 
-#     # 2. Create
-#     def post(self, request, *args, **kwargs):
+    elif request.method == 'POST':
 
-#         data = {
+        data = {
+            'nome': request.data.get('nome'), 
+            'faixa_salarial': request.data.get('faixa_salarial'), 
+            'requisitos': request.data.get('requisitos'), 
+            'escolaridade_minima': request.data.get('escolaridade_minima'),
+            'empresa': request.user.id
             
-#             'nome': request.data.get('nome'), 
-#             'faixa_salarial': request.data.get('faixa_salarial'), 
-#             'requisitos': request.data.get('requisitos'), 
-#             'escolaridade_minima': request.data.get('escolaridade_minima')
-#         }
+        }
 
-#         serializer = VagaSerializer(data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        serializer = VagaSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'PUT':
+        data = {
+            'id': request.data.get('id'),
+            'nome': request.data.get('nome'), 
+            'faixa_salarial': request.data.get('faixa_salarial'), 
+            'requisitos': request.data.get('requisitos'), 
+            'escolaridade_minima': request.data.get('escolaridade_minima'),
+            'empresa': request.user.id
+            
+        }
+         
+        serializer = VagaSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'DELETE':
+        id = request.data.get('id')
+        Vaga.objects.filter(id=id).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

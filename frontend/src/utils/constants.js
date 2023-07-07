@@ -1,6 +1,4 @@
 export const API_BASE_URL = "http://127.0.0.1:8000/api/";
-export const API_URL = "http://127.0.0.1:8000/api/empresas/";
-export const API_URL_VAGAS = "http://127.0.0.1:8000/api/vagas/";
 
 export const FAIXA_SALARIAL = [
   { value: 1, label: "Até 1.000" },

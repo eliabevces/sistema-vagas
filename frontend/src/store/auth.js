@@ -11,11 +11,12 @@ const useAuthStore = create((set, get) => ({
     first_name: get().allUserData?.first_name || null,
     is_empresa: get().allUserData?.is_empresa || null,
     is_candidato: get().allUserData?.is_candidato || null,
-    tudo: get().allUserData || null,
   }),
   setUser: (user) => set({ allUserData: user }),
   setLoading: (loading) => set({ loading }),
   isLoggedIn: () => get().allUserData !== null,
+  isEmpresaLoggedIn: () => get().allUserData?.is_empresa == true,
+  isCandidatoLoggedIn: () => get().allUserData?.is_candidato == true,
 }));
 
 if (import.meta.env.DEV) {

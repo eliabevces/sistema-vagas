@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
+import { useAuthStore } from "../store/auth";
 import useAxios from "../utils/useAxios";
 
 const Private = () => {
+  const [isLoggedIn, user] = useAuthStore((state) => [
+    state.isLoggedIn,
+    state.user,
+  ]);
   const [res, setRes] = useState("");
   const [posRes, setPostRes] = useState("");
   const api = useAxios();
